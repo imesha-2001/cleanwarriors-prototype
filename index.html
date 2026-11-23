@@ -1,392 +1,723 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="si">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>CleanWarriors — UI Prototype</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Clean Sri Lanka හරිත මාවත — Mobile UI Prototype</title>
+
+  <!-- Google Fonts: Orbitron (Digital Headings), Inter, Noto Sans Sinhala & Tamil -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Sinhala:wght@400;500;600;700;800&family=Noto+Sans+Tamil:wght@400;500;600;700&family=Orbitron:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            cleanBlue: '#34a6cc',
+            harithaGreen: '#8abd3f',
+            softGray: '#F9F9F9',
+            darkBg: '#121212'
+          }
+        }
+      }
+    };
+  </script>
+
+  <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
-<div class="stage">
+<body class="bg-[#F9F9F9] dark:bg-[#121212] text-gray-800 dark:text-gray-100 min-h-screen flex flex-col items-center justify-start sm:justify-center sm:py-6 transition-colors duration-300">
 
-  <!-- Prototype navigator (desktop only) -->
-  <aside class="flow-nav">
-    <h2>CLEANWARRIORS</h2>
-    <p>Clickable prototype of the UI/UX spec. Use the app normally, or jump to any screen here.</p>
-    <div class="group">Preview faction theme</div>
-    <div class="swatches" id="themeSwatches">
-      <button data-f="flora" title="Faction Flora">🌿</button>
-      <button data-f="unity" title="Faction Unity">🤝</button>
-      <button data-f="nova" title="Faction Nova">⚖️</button>
+  <!-- Quick Screen Switcher Bar (for easy interactive prototype testing across all 6 screens) -->
+  <div class="w-full max-w-[430px] px-3 pt-2.5 pb-2 sm:pt-0 sm:pb-3 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+    <button onclick="navigateTo('language')" data-nav-target="language" class="demo-pill px-3 py-1.5 rounded-full text-xs font-semibold bg-[#34a6cc] text-white shadow-sm whitespace-nowrap">1. Language</button>
+    <button onclick="navigateTo('profile')" data-nav-target="profile" class="demo-pill px-3 py-1.5 rounded-full text-xs font-medium bg-white text-gray-600 border border-gray-200 whitespace-nowrap">2. Profile </button>
+    <button onclick="navigateTo('map')" data-nav-target="map" class="demo-pill px-3 py-1.5 rounded-full text-xs font-medium bg-white text-gray-600 border border-gray-200 whitespace-nowrap">3. Map Proximity</button>
+    <button onclick="navigateTo('maintain')" data-nav-target="maintain" class="demo-pill px-3 py-1.5 rounded-full text-xs font-medium bg-white text-gray-600 border border-gray-200 whitespace-nowrap">4. Tree Care</button>
+    <button onclick="navigateTo('reviews')" data-nav-target="reviews" class="demo-pill px-3 py-1.5 rounded-full text-xs font-medium bg-white text-gray-600 border border-gray-200 whitespace-nowrap">5. Public Reviews</button>
+    <button onclick="navigateTo('timelapse')" data-nav-target="timelapse" class="demo-pill px-3 py-1.5 rounded-full text-xs font-medium bg-white text-gray-600 border border-gray-200 whitespace-nowrap">6. Time-Lapse</button>
+  </div>
+
+  <!-- Mobile App Shell Container -->
+  <div class="relative w-full max-w-[420px] min-h-[calc(100vh-48px)] sm:min-h-[800px] sm:max-h-[860px] bg-[#F9F9F9] dark:bg-[#121212] sm:rounded-[38px] sm:shadow-[0_24px_70px_rgba(0,0,0,0.14)] sm:border-[7px] sm:border-white dark:sm:border-zinc-800 flex flex-col overflow-hidden">
+
+    <!-- Floating Toast Notification -->
+    <div id="app-toast" style="opacity:0; pointer-events:none;" class="fixed top-20 left-1/2 -translate-x-1/2 z-50">
+      <span id="app-toast-icon" class="text-lg">🌿</span>
+      <p id="app-toast-text" class="text-xs font-semibold leading-snug"></p>
     </div>
-    <div class="group">Demo player level</div>
-    <select id="levelSelect" class="field" style="padding:10px;font-size:13px"></select>
-    <div class="group">Onboarding</div>
-    <button data-go="splash">1 · Splash</button>
-    <button data-go="auth">2 · Sign in</button>
-    <button data-go="faction">3 · Choose faction</button>
-    <div class="group">Core</div>
-    <button data-go="hub">4 · Map Hub / Scanner</button>
-    <button data-go="report">5.1 · Report</button>
-    <button data-go="organize">5.2 · Organize</button>
-    <button data-go="participate">5.3 · Participate</button>
-    <div class="group">Player</div>
-    <button data-go="profile">6 · Profile &amp; Eco-Wallet</button>
-    <button data-sheet="gift">6 · Gifting</button>
-    <button data-go="ar">7 · AR view</button>
-    <div class="group">Social</div>
-    <button data-go="summary">8 · Mission summary</button>
-    <button data-go="battle">8 · Zone Battle</button>
-    <button data-sheet="leaderboard">Leaderboard</button>
-    <button data-sheet="chat">Squad chat</button>
-  </aside>
 
-  <div class="phone">
-    <div class="viewport" id="viewport">
-      <div class="notch"></div>
-      <div class="statusbar"><span id="clock">9:41</span><span>📶 🔋</span></div>
+    <!-- Persistent Brand App Header -->
+    <header class="sticky top-0 z-30 bg-[#FFFFFF] dark:bg-zinc-900 border-b border-gray-100 dark:border-zinc-800 px-4 py-3 flex items-center justify-between shadow-[0_2px_10px_rgba(0,0,0,0.03)]">
+      <div onclick="navigateTo('language')" class="flex items-center gap-2.5 cursor-pointer">
+        <!-- Brand Emblem Icon -->
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#34a6cc]/15 to-[#8abd3f]/20 border border-[#8abd3f]/30 flex items-center justify-center shrink-0">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none">
+            <path d="M12 3C7.5 3 4 6.8 4 11.5C4 15.4 6.7 18.7 10.5 19.6V22H13.5V19.6C17.3 18.7 20 15.4 20 11.5C20 6.8 16.5 3 12 3Z" fill="#8abd3f"/>
+            <path d="M12 6V19M12 11L16 8M12 14L8.5 11" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
+            <circle cx="18.5" cy="5.5" r="2.5" fill="#34a6cc"/>
+          </svg>
+        </div>
+        <div class="leading-tight">
+          <h1 class="text-sm sm:text-[15px] font-extrabold tracking-tight flex flex-wrap items-baseline gap-1">
+            <span class="font-brand" style="color: #34a6cc;">Clean Sri Lanka</span>
+            <span class="font-sinhala font-extrabold" style="color: #8abd3f;">හරිත මාවත</span>
+          </h1>
+          <p class="text-[11px] text-gray-400 dark:text-zinc-400 font-medium flex items-center gap-1.5">
+            <span>Mobile App</span>
+            <span>•</span>
+            <span id="header-lang-pill" class="text-[#34a6cc] font-semibold">සිංහල</span>
+          </p>
+        </div>
+      </div>
 
-      <!-- ============ 1. SPLASH ============ -->
-      <section class="screen" id="splash">
-        <div class="logo">
-          <svg class="logo-mark" viewBox="0 0 120 120">
+      <div class="flex items-center gap-1.5">
+        <!-- Green Points Badge -->
+        <div class="px-2.5 py-1 rounded-full bg-[#8abd3f]/15 border border-[#8abd3f]/40 flex items-center gap-1 transition-transform duration-300">
+          <span class="text-xs">🌱</span>
+          <span id="header-points-val" class="text-xs font-extrabold text-[#5f8922] dark:text-[#a3d955]">120</span>
+          <span class="text-[10px] font-bold text-[#6e9c2b] dark:text-[#8abd3f]">pts</span>
+        </div>
+        <!-- Dark/Light Theme Toggle -->
+        <button onclick="toggleDarkMode()" title="Toggle Light / Dark Mode" class="w-8 h-8 rounded-full bg-[#F9F9F9] dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 flex items-center justify-center text-xs hover:scale-105 transition-transform">
+          <span id="theme-toggle-icon">🌙</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Scrollable Viewport -->
+    <main class="flex-1 overflow-y-auto no-scrollbar relative">
+
+      <!-- =========================================================
+           SCREEN 1: LANGUAGE SELECTION (භාෂාව තේරීම)
+           ========================================================= -->
+      <section id="screen-language" class="p-5 flex flex-col justify-between min-h-[680px]">
+        <div class="mt-3 text-center">
+          <!-- Official Hero Badge -->
+          <div class="mx-auto w-24 h-24 rounded-3xl bg-white dark:bg-zinc-800 shadow-md border border-gray-100 dark:border-zinc-700 flex items-center justify-center relative mb-5">
+            <div class="absolute inset-0 rounded-3xl bg-gradient-to-tr from-[#34a6cc]/10 to-[#8abd3f]/20"></div>
+            <svg class="w-14 h-14 relative z-10" viewBox="0 0 64 64" fill="none">
+              <circle cx="32" cy="32" r="28" stroke="#34a6cc" stroke-width="2.5" stroke-dasharray="6 4"/>
+              <path d="M32 10C20 10 13 20 13 31C13 41.5 20.8 49 30 50.7V56H34V50.7C43.2 49 51 41.5 51 31C51 20 44 10 32 10Z" fill="#8abd3f"/>
+              <path d="M32 18V49M32 30L42 23M32 37L22 29" stroke="white" stroke-width="3" stroke-linecap="round"/>
+              <circle cx="47" cy="15" r="5" fill="#34a6cc"/>
+            </svg>
+          </div>
+
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-xs font-semibold text-gray-500 dark:text-gray-300 mb-3 shadow-sm">
+           
+            <span>Official Citizen Tree Care Initiative</span>
+          </div>
+
+          <h2 class="text-2xl font-extrabold tracking-tight leading-snug">
+            <span class="font-brand block" style="color: #34a6cc;">Clean Sri Lanka</span>
+            <span class="font-sinhala text-[26px] block mt-0.5" style="color: #8abd3f;">හරිත මාවත</span>
+          </h2>
+
+          <p id="lang-welcome-sub" class="text-xs text-gray-500 dark:text-gray-400 mt-2.5 max-w-[290px] mx-auto leading-relaxed">
+            ශ්‍රී ලංකාවේ හරිත අනාගතය සුරකින ඩිජිටල් මාවතට සාදරයෙන් පිළිගනිමු.
+          </p>
+        </div>
+
+        <!-- Language Cards -->
+        <div class="my-6">
+          <p id="lang-select-prompt" class="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-zinc-400 mb-3 text-center">
+            ඔබගේ භාෂාව තෝරන්න
+          </p>
+
+          <div class="space-y-3">
+            <!-- Sinhala -->
+            <button type="button" id="lang-card-si" onclick="selectLanguage('si')" class="w-full p-4 rounded-2xl border-2 border-[#8abd3f] bg-[#8abd3f]/10 flex items-center justify-between transition-all">
+              <div class="flex items-center gap-3.5 text-left">
+                <div class="w-11 h-11 rounded-xl bg-[#8abd3f]/20 text-[#5a8220] dark:text-[#a2dc4d] font-extrabold text-base flex items-center justify-center">
+                  සිං
+                </div>
+                <div>
+                  <p class="text-base font-bold text-gray-900 dark:text-white font-sinhala">සිංහල</p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">Sinhala • මව් භාෂාවෙන් භාවිතා කරන්න</p>
+                </div>
+              </div>
+              <div id="lang-check-si" class="w-6 h-6 rounded-full bg-[#8abd3f] text-white flex items-center justify-center text-xs font-bold">✓</div>
+            </button>
+
+            <!-- Tamil -->
+            <button type="button" id="lang-card-ta" onclick="selectLanguage('ta')" class="w-full p-4 rounded-2xl border border-gray-200 bg-white flex items-center justify-between transition-all">
+              <div class="flex items-center gap-3.5 text-left">
+                <div class="w-11 h-11 rounded-xl bg-[#34a6cc]/15 text-[#34a6cc] font-extrabold text-base flex items-center justify-center">
+                  த
+                </div>
+                <div>
+                  <p class="text-base font-bold text-gray-900 dark:text-white">தமிழ்</p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">Tamil • தமிழ் மொழியில் தொடரவும்</p>
+                </div>
+              </div>
+              <div id="lang-check-ta" class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center text-xs"></div>
+            </button>
+
+            <!-- English -->
+            <button type="button" id="lang-card-en" onclick="selectLanguage('en')" class="w-full p-4 rounded-2xl border border-gray-200 bg-white flex items-center justify-between transition-all">
+              <div class="flex items-center gap-3.5 text-left">
+                <div class="w-11 h-11 rounded-xl bg-gray-100 dark:bg-zinc-700 text-gray-700 dark:text-gray-200 font-extrabold text-sm flex items-center justify-center">
+                  EN
+                </div>
+                <div>
+                  <p class="text-base font-bold text-gray-900 dark:text-white">English</p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">Continue in English interface</p>
+                </div>
+              </div>
+              <div id="lang-check-en" class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center text-xs"></div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Next Button -->
+        <div class="pb-2">
+          <button
+            type="button"
+            onclick="navigateTo('profile')"
+            class="w-full py-4 rounded-2xl font-bold text-white bg-gradient-to-r from-[#34a6cc] to-[#8abd3f] shadow-lg shadow-[#34a6cc]/25 hover:opacity-95 active:scale-[0.99] transition-all flex items-center justify-center gap-2"
+          >
+            <span id="lang-next-btn-text">ඉදිරියට යන්න</span>
+            <span>→</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- =========================================================
+           SCREEN 2: PROFILE CREATION & GPS PERMISSION
+           ========================================================= -->
+      <section id="screen-profile" class="hidden p-5 pb-8">
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-[#34a6cc]">Step 2 of 2</span>
+            <h2 class="text-lg font-extrabold text-gray-900 dark:text-white">Guardian Profile Setup</h2>
+          </div>
+          <button type="button" onclick="fillDemoProfile()" class="px-3 py-1.5 rounded-xl bg-[#34a6cc]/10 text-[#34a6cc] text-xs font-bold hover:bg-[#34a6cc]/20 transition-colors">
+            ✨ Auto-Fill Demo
+          </button>
+        </div>
+
+        <p id="prof-helper-banner" class="text-xs text-gray-500 dark:text-gray-400 mb-4 bg-white dark:bg-zinc-800 p-3 rounded-xl border border-gray-100 dark:border-zinc-700">
+          ඔබගේ තොරතුරු ඇතුළත් කර හරිත ආරක්ෂකයෙකු ලෙස ලියාපදිංචි වන්න.
+        </p>
+
+        <form onsubmit="submitRegistration(event)" class="space-y-3.5">
+          <!-- Name -->
+          <div class="bg-white dark:bg-zinc-800 p-3.5 rounded-2xl border border-gray-100 dark:border-zinc-700 shadow-sm">
+            <label class="block text-xs font-bold text-gray-700 dark:text-gray-200">Full Name *</label>
+            <input id="input-name" type="text" required value="Githara Wijesinghe" placeholder="e.g. Githara Wijesinghe" class="mt-1 w-full text-sm font-medium bg-[#F9F9F9] dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#34a6cc]" />
+            <p id="help-name" class="text-xs text-gray-400 mt-1">ඔබගේ සම්පූර්ණ නම ඇතුළත් කරන්න</p>
+          </div>
+
+          <!-- Address -->
+          <div class="bg-white dark:bg-zinc-800 p-3.5 rounded-2xl border border-gray-100 dark:border-zinc-700 shadow-sm">
+            <label class="block text-xs font-bold text-gray-700 dark:text-gray-200">Residential Address *</label>
+            <input id="input-address" type="text" required value="No. 42, Parliament Road, Battaramulla" placeholder="Street & City" class="mt-1 w-full text-sm font-medium bg-[#F9F9F9] dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#34a6cc]" />
+            <p id="help-address" class="text-xs text-gray-400 mt-1">ඔබගේ පදිංචි ලිපිනය ඇතුළත් කරන්න</p>
+          </div>
+
+          <!-- District & DS Division Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="bg-white dark:bg-zinc-800 p-3.5 rounded-2xl border border-gray-100 dark:border-zinc-700 shadow-sm">
+              <label class="block text-xs font-bold text-gray-700 dark:text-gray-200">District *</label>
+              <select id="input-district" class="mt-1 w-full text-sm font-medium bg-[#F9F9F9] dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#34a6cc]"></select>
+              <p id="help-district" class="text-xs text-gray-400 mt-1">ඔබගේ දිස්ත්‍රික්කය තෝරන්න</p>
+            </div>
+
+            <div class="bg-white dark:bg-zinc-800 p-3.5 rounded-2xl border border-gray-100 dark:border-zinc-700 shadow-sm">
+              <label class="block text-xs font-bold text-gray-700 dark:text-gray-200">DS Division *</label>
+              <select id="input-ds" class="mt-1 w-full text-sm font-medium bg-[#F9F9F9] dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#34a6cc]"></select>
+              <p id="help-ds" class="text-xs text-gray-400 mt-1">ප්‍රාදේශීය ලේකම් කොට්ඨාසය තෝරන්න</p>
+            </div>
+          </div>
+
+          <!-- Email & Phone -->
+          <div class="bg-white dark:bg-zinc-800 p-3.5 rounded-2xl border border-gray-100 dark:border-zinc-700 shadow-sm space-y-3">
+            <div>
+              <label class="block text-xs font-bold text-gray-700 dark:text-gray-200">Email Address</label>
+              <input id="input-email" type="email" value="githara.w@cleansrilanka.lk" placeholder="you@example.com" class="mt-1 w-full text-sm font-medium bg-[#F9F9F9] dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 rounded-xl px-3 py-2 focus:outline-none focus:border-[#34a6cc]" />
+              <p id="help-email" class="text-xs text-gray-400 mt-1">විද්‍යුත් තැපැල් ලිපිනය (උදා: name@mail.com)</p>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-700 dark:text-gray-200">Phone Number *</label>
+              <input id="input-phone" type="tel" required value="077 458 9210" placeholder="07X XXX XXXX" class="mt-1 w-full text-sm font-medium bg-[#F9F9F9] dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 rounded-xl px-3 py-2 focus:outline-none focus:border-[#34a6cc]" />
+              <p id="help-phone" class="text-xs text-gray-400 mt-1">ජංගම දුරකථන අංකය (07X XXX XXXX)</p>
+            </div>
+          </div>
+
+          <!-- GPS Permission Gate Card -->
+          <div id="gps-status-card" class="p-4 rounded-2xl border-2 border-amber-300 bg-amber-50/90 transition-all">
+            <div class="flex items-center justify-between gap-3">
+              <div class="min-w-0">
+                <p class="text-xs font-extrabold text-gray-900 dark:text-white flex items-center gap-1.5">
+                  <span>🛰️ Enable GPS to Continue</span>
+                </p>
+                <p id="gps-helper-text" class="text-xs text-gray-600 dark:text-gray-300 mt-0.5">
+                  ඉස්සරහට යන්න GPS සක්‍රීය කරන්න
+                </p>
+              </div>
+              <button type="button" id="enable-gps-btn" onclick="openGpsModal()" class="shrink-0">
+                📍 Turn On GPS
+              </button>
+            </div>
+          </div>
+
+          <!-- Register Button (Active only after GPS enabled) -->
+          <button type="submit" id="register-submit-btn" disabled class="w-full py-3.5 rounded-2xl font-bold">
+            <span>Complete Registration</span>
+            <span>→</span>
+          </button>
+        </form>
+
+        <!-- GPS Permission Popup Modal -->
+        <div id="gps-permission-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-5">
+          <div class="bg-white dark:bg-zinc-900 w-full max-w-[340px] rounded-3xl p-5 shadow-2xl border border-gray-100 dark:border-zinc-800 text-center">
+            <div class="mx-auto w-16 h-16 rounded-full bg-[#34a6cc]/15 flex items-center justify-center relative mb-4">
+              <div class="absolute inset-0 rounded-full bg-[#34a6cc]/30 radar-ring"></div>
+              <span class="text-2xl relative z-10">📍</span>
+            </div>
+            <h3 class="text-base font-extrabold text-gray-900 dark:text-white">Enable GPS to Continue</h3>
+           
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-2 leading-relaxed">
+              Clean Sri Lanka හරිත මාවත verifies that you are within <strong>5–10 meters</strong> of your assigned tree during care updates.
+            </p>
+            <div class="mt-5 space-y-2">
+              <button type="button" id="modal-allow-gps-btn" onclick="grantGpsPermission()" class="w-full py-3 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-[#34a6cc] to-[#8abd3f] shadow-md hover:opacity-95 cursor-pointer">
+                Allow Precise GPS Location
+              </button>
+              <button type="button" onclick="closeGpsModal()" class="w-full py-2.5 rounded-xl text-xs font-semibold text-gray-500 hover:bg-gray-100 dark:hover:bg-zinc-800">
+                Not Now
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================================================
+           SCREEN 3: MAIN MAP DASHBOARD & PROXIMITY UI
+           ========================================================= -->
+      <section id="screen-map" class="hidden pb-20">
+        <!-- Interactive Proximity Simulator Control Bar -->
+        <div class="bg-white dark:bg-zinc-900 px-4 py-3 border-b border-gray-100 dark:border-zinc-800">
+          <div class="flex items-center justify-between gap-2 mb-2">
+            <div>
+              <p class="text-xs font-extrabold text-gray-800 dark:text-gray-100 flex items-center gap-1.5">
+                <span>🛰️ GPS Proximity Simulator</span>
+              </p>
+              <p class="text-xs text-gray-400">Slide within 5–10m to unlock active glow</p>
+            </div>
+            <button id="quick-walk-btn" onclick="toggleQuickProximity()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#8abd3f] text-white">
+              🏃 Walk Closer (6m)
+            </button>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <span class="text-xs font-bold text-emerald-600">2m</span>
+            <input
+              id="proximity-slider"
+              type="range"
+              min="2"
+              max="60"
+              value="45"
+              oninput="setProximityDistance(this.value)"
+              class="w-full accent-[#8abd3f] cursor-pointer h-2 bg-gray-200 dark:bg-zinc-700 rounded-lg"
+            />
+            <span class="text-xs font-bold text-amber-600">60m</span>
+          </div>
+        </div>
+
+        <!-- Google Maps Style Interactive Canvas -->
+        <div class="relative h-[335px] w-full map-pattern overflow-hidden border-b border-gray-200 dark:border-zinc-800">
+          <!-- Stylized Vector Roads, Diyatha Lake & Park Zones -->
+          <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 400 340" preserveAspectRatio="none">
+            <!-- Diyatha Water Body -->
+            <path d="M250,0 C280,65 320,90 400,115 L400,0 Z" fill="#bfe6f5" opacity="0.75"/>
+            <path d="M0,250 C90,235 160,275 230,340 L0,340 Z" fill="#d6edd8" opacity="0.65"/>
+            <!-- Park Green Patch -->
+            <ellipse cx="215" cy="155" rx="95" ry="68" fill="#d9f0d0" opacity="0.8"/>
+            <!-- Roads -->
+            <path d="M-10,210 Q150,185 410,95" stroke="#ffffff" stroke-width="14" fill="none"/>
+            <path d="M-10,210 Q150,185 410,95" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="6 6" fill="none"/>
+            <path d="M125,-10 Q165,175 195,350" stroke="#ffffff" stroke-width="11" fill="none"/>
+            <!-- Map Labels -->
+            <text x="275" y="42" fill="#2980a0" font-size="10" font-weight="700">Diyatha Lake</text>
+            <text x="165" y="135" fill="#4f7928" font-size="10" font-weight="700">Haritha Park Zone A</text>
+            <text x="24" y="196" fill="#64748b" font-size="9" font-weight="600">Parliament Rd</text>
+          </svg>
+
+          <!-- Top Map Floating Status Banner -->
+          <div class="absolute top-3 inset-x-3 z-30 space-y-2">
+            <div id="map-proximity-banner"></div>
+            <div class="flex justify-between items-center">
+              <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-white/90 dark:bg-zinc-900/90 text-gray-700 dark:text-gray-200 shadow-sm backdrop-blur-xs">
+                👤 <span id="hud-guardian-name">Githara Wijesinghe</span>
+              </span>
+              <span id="map-distance-badge">45m from nearest tree</span>
+            </div>
+          </div>
+
+          <!-- User Live Blue GPS Dot -->
+          <div id="map-user-marker" style="left: 22%; top: 82%;" class="absolute -translate-x-1/2 -translate-y-1/2 z-20 transition-all duration-500">
+            <div class="relative flex items-center justify-center">
+              <div class="absolute w-10 h-10 rounded-full bg-[#34a6cc]/35 radar-ring"></div>
+              <div class="w-4 h-4 rounded-full bg-[#34a6cc] border-2 border-white shadow-md"></div>
+            </div>
+            <span class="block text-[10px] font-bold bg-[#34a6cc] text-white px-1.5 py-0.5 rounded mt-0.5 shadow">You</span>
+          </div>
+
+          <!-- Dynamic Assigned Tree Markers -->
+          <div id="map-tree-markers"></div>
+        </div>
+
+        <!-- Assigned Trees List -->
+        <div class="p-4">
+          <div class="flex items-center justify-between mb-2.5">
+            <h3 class="text-sm font-extrabold text-gray-800 dark:text-white">My Assigned Trees (3)</h3>
+            <span class="text-xs text-gray-400">Tap an active tree to maintain</span>
+          </div>
+          <div id="assigned-tree-list" class="space-y-2.5"></div>
+        </div>
+      </section>
+
+      <!-- =========================================================
+           SCREEN 4: TREE MAINTENANCE & CREATIVE ANIMATIONS
+           ========================================================= -->
+      <section id="screen-maintain" class="hidden p-4 pb-24">
+        <!-- Top Back & Tree Title -->
+        <div class="flex items-center justify-between gap-2 mb-3">
+          <button onclick="navigateTo('map')" class="px-3 py-1.5 rounded-xl bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-xs font-bold text-gray-700 dark:text-gray-200 hover:border-[#34a6cc]">
+            ← Map
+          </button>
+          <span id="tree-stage-pill" class="px-3 py-1 rounded-full text-xs font-bold bg-[#8abd3f]/15 text-[#58811c] dark:text-[#a7e159]">
+            Stage 2 • Growing Shoot 🌿
+          </span>
+        </div>
+
+        <div class="mb-3">
+          <h2 id="maint-tree-name" class="text-lg font-extrabold text-gray-900 dark:text-white">කුඹුක් ගස </h2>
+          <p id="maint-tree-meta" class="text-xs text-gray-500 dark:text-gray-400">T-101 • Terminalia arjuna • Diyatha Uyana</p>
+        </div>
+
+        <!-- Interactive Digital Tree Avatar Stage -->
+        <div class="relative h-[245px] rounded-3xl bg-gradient-to-b from-sky-50 via-emerald-50/40 to-[#e6f3dc] dark:from-zinc-900 dark:via-emerald-950/20 dark:to-zinc-800 border border-[#8abd3f]/30 shadow-inner flex flex-col items-center justify-end overflow-hidden p-4">
+          <!-- Effects Overlay for Water Drops, Fertilizer Sparkles & Floating +Points -->
+          <div id="tree-fx-overlay" class="absolute inset-0 pointer-events-none z-20"></div>
+
+          <!-- Sun / Ambient Badge -->
+          <div class="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-white/80 dark:bg-zinc-800/80 text-xs font-semibold text-emerald-700 dark:text-emerald-300 backdrop-blur-xs">
+            📍 GPS Active (6m)
+          </div>
+
+          <!-- Dynamic SVG Tree + Protective Fence + Glowing Shield -->
+          <svg id="tree-avatar-svg" class="w-56 h-52 relative z-10 transition-transform duration-300" viewBox="0 0 240 210" fill="none">
+            <!-- Protective Guardian Shield Aura (Toggled by Fencing button) -->
+            <g id="svg-guardian-shield" class="hidden">
+              <path d="M120 14 C172 26 196 66 192 124 C189 164 156 188 120 198 C84 188 51 164 48 124 C44 66 68 26 120 14 Z"
+                    fill="url(#shieldGrad)" stroke="#34a6cc" stroke-width="2.5" stroke-dasharray="6 3"/>
+            </g>
+
+            <!-- Soil Mound -->
+            <ellipse cx="120" cy="186" rx="68" ry="14" fill="#8d6e63"/>
+            <ellipse cx="120" cy="184" rx="55" ry="9" fill="#6d4c41"/>
+
+            <!-- Trunk & Branches -->
+            <path d="M114 184 L116 115 L124 115 L126 184 Z" fill="#6d4c41"/>
+            <path d="M120 140 L98 118 M120 132 L142 112" stroke="#6d4c41" stroke-width="5" stroke-linecap="round"/>
+
+            <!-- Growing Lush Canopy -->
+            <g id="svg-tree-canopy" class="transition-transform duration-500">
+              <circle class="canopy-leaf transition-colors duration-500" cx="94" cy="108" r="26" fill="#7cb332"/>
+              <circle class="canopy-leaf transition-colors duration-500" cx="146" cy="108" r="26" fill="#7cb332"/>
+              <circle class="canopy-leaf transition-colors duration-500" cx="120" cy="78" r="34" fill="#8abd3f"/>
+              <circle class="canopy-leaf transition-colors duration-500" cx="105" cy="95" r="24" fill="#9ccc49"/>
+              <circle class="canopy-leaf transition-colors duration-500" cx="136" cy="94" r="22" fill="#8abd3f"/>
+              <!-- Highlight sparkles -->
+              <circle cx="110" cy="68" r="4" fill="#d9f99d" opacity="0.8"/>
+              <circle cx="135" cy="82" r="3" fill="#d9f99d" opacity="0.7"/>
+            </g>
+
+            <!-- Wooden Protective Fence (Toggled by Fencing button) -->
+            <g id="svg-wood-fence" class="hidden">
+              <rect x="64" y="156" width="8" height="30" rx="2" fill="#b45309" stroke="#78350f" stroke-width="1.2"/>
+              <rect x="86" y="156" width="8" height="30" rx="2" fill="#b45309" stroke="#78350f" stroke-width="1.2"/>
+              <rect x="108" y="156" width="8" height="30" rx="2" fill="#b45309" stroke="#78350f" stroke-width="1.2"/>
+              <rect x="130" y="156" width="8" height="30" rx="2" fill="#b45309" stroke="#78350f" stroke-width="1.2"/>
+              <rect x="152" y="156" width="8" height="30" rx="2" fill="#b45309" stroke="#78350f" stroke-width="1.2"/>
+              <rect x="170" y="156" width="8" height="30" rx="2" fill="#b45309" stroke="#78350f" stroke-width="1.2"/>
+              <rect x="60" y="163" width="122" height="5" rx="2" fill="#d97706"/>
+              <rect x="60" y="175" width="122" height="5" rx="2" fill="#d97706"/>
+            </g>
+
             <defs>
-              <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#39FF14"/><stop offset="1" stop-color="#00BFFF"/>
+              <linearGradient id="shieldGrad" x1="120" y1="14" x2="120" y2="198" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#34a6cc" stop-opacity="0.24"/>
+                <stop offset="100%" stop-color="#8abd3f" stop-opacity="0.18"/>
               </linearGradient>
             </defs>
-            <polygon points="60,6 108,33 108,87 60,114 12,87 12,33" fill="none" stroke="url(#lg)" stroke-width="4"/>
-            <path d="M60 30 C 38 46, 38 74, 60 92 C 82 74, 82 46, 60 30 Z" fill="none" stroke="url(#lg)" stroke-width="4"/>
-            <path d="M60 36 V 90 M60 56 L 72 46 M60 70 L 48 60" stroke="url(#lg)" stroke-width="3" stroke-linecap="round"/>
           </svg>
-          <h1>CLEANWARRIORS</h1>
-          <small>CLEAN SRI LANKA</small>
-          <div class="loader"><i></i></div>
         </div>
-        <div class="splash-foot">“Let's build a nation through play”</div>
+
+        <!-- Tree Health Metrics -->
+        <div class="mt-3 grid grid-cols-3 gap-2">
+          <div class="p-2.5 rounded-2xl bg-white dark:bg-zinc-800 border border-gray-100 dark:border-zinc-700">
+            <div class="flex justify-between text-xs mb-1">
+              <span class="text-gray-500">💧 Moisture</span>
+              <span id="val-water" class="font-bold text-[#34a6cc]">65%</span>
+            </div>
+            <div class="h-1.5 rounded-full bg-gray-100 dark:bg-zinc-700 overflow-hidden">
+              <div id="bar-water" class="h-full bg-[#34a6cc] transition-all duration-500" style="width: 65%"></div>
+            </div>
+          </div>
+
+          <div class="p-2.5 rounded-2xl bg-white dark:bg-zinc-800 border border-gray-100 dark:border-zinc-700">
+            <div class="flex justify-between text-xs mb-1">
+              <span class="text-gray-500">🌱 Nutrients</span>
+              <span id="val-fert" class="font-bold text-[#8abd3f]">50%</span>
+            </div>
+            <div class="h-1.5 rounded-full bg-gray-100 dark:bg-zinc-700 overflow-hidden">
+              <div id="bar-fert" class="h-full bg-[#8abd3f] transition-all duration-500" style="width: 50%"></div>
+            </div>
+          </div>
+
+          <div class="p-2.5 rounded-2xl bg-white dark:bg-zinc-800 border border-gray-100 dark:border-zinc-700 flex flex-col justify-between">
+            <span class="text-xs text-gray-500">🛡️ Guard</span>
+            <span id="val-fence" class="text-xs font-semibold text-amber-600">Unfenced</span>
+          </div>
+        </div>
+
+        <!-- Simple One-Tap Maintenance Buttons (No typing needed!) -->
+        <div class="mt-4">
+          <p class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">
+            One-Tap Care Actions
+          </p>
+          <div class="grid grid-cols-3 gap-2.5">
+            <!-- Watering -->
+            <button
+              type="button"
+              onclick="triggerWatering()"
+              class="p-3.5 rounded-2xl bg-white dark:bg-zinc-800 border-2 border-[#34a6cc]/30 hover:border-[#34a6cc] active:scale-95 transition-all flex flex-col items-center text-center shadow-sm cursor-pointer"
+            >
+              <div class="w-12 h-12 rounded-2xl bg-[#34a6cc]/15 flex items-center justify-center text-2xl mb-2">
+                💧
+              </div>
+              <span class="text-xs font-extrabold text-gray-900 dark:text-white">Watering</span>
+              <span id="sub-water" class="text-xs text-[#34a6cc] font-medium mt-0.5">වතුර දැමීම</span>
+              <span class="mt-1.5 px-2 py-0.5 rounded-full bg-[#34a6cc]/10 text-[#34a6cc] text-[10px] font-bold">+10 pts</span>
+            </button>
+
+            <!-- Fertilizing -->
+            <button
+              type="button"
+              onclick="triggerFertilizing()"
+              class="p-3.5 rounded-2xl bg-white dark:bg-zinc-800 border-2 border-[#8abd3f]/35 hover:border-[#8abd3f] active:scale-95 transition-all flex flex-col items-center text-center shadow-sm cursor-pointer"
+            >
+              <div class="w-12 h-12 rounded-2xl bg-[#8abd3f]/15 flex items-center justify-center text-2xl mb-2">
+                🌱
+              </div>
+              <span class="text-xs font-extrabold text-gray-900 dark:text-white">Fertilizing</span>
+              <span id="sub-fert" class="text-xs text-[#689427] dark:text-[#9fd44f] font-medium mt-0.5">පොහොර දැමීම</span>
+              <span class="mt-1.5 px-2 py-0.5 rounded-full bg-[#8abd3f]/15 text-[#5b8320] dark:text-[#a8df58] text-[10px] font-bold">+15 pts</span>
+            </button>
+
+            <!-- Fencing -->
+            <button
+              type="button"
+              onclick="triggerFencing()"
+              class="p-3.5 rounded-2xl bg-white dark:bg-zinc-800 border-2 border-emerald-500/30 hover:border-emerald-500 active:scale-95 transition-all flex flex-col items-center text-center shadow-sm cursor-pointer"
+            >
+              <div class="w-12 h-12 rounded-2xl bg-emerald-500/15 flex items-center justify-center text-2xl mb-2">
+                🛡️
+              </div>
+              <span class="text-xs font-extrabold text-gray-900 dark:text-white">Fencing</span>
+              <span id="sub-fence" class="text-xs text-emerald-600 dark:text-emerald-400 font-medium mt-0.5">වැටක් ගැසීම</span>
+              <span class="mt-1.5 px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold">+20 pts</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Camera Photo Verification Upload -->
+        <div class="mt-4 p-4 rounded-2xl bg-white dark:bg-zinc-800 border border-gray-100 dark:border-zinc-700 shadow-sm">
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <h4 class="text-xs font-extrabold text-gray-800 dark:text-white">📸 Maintenance Photo Proof</h4>
+              <p id="maint-photo-status" class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                Snap or upload a live photo for +15 bonus points
+              </p>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onclick="triggerQuickCameraSnap()"
+                class="px-3 py-2 rounded-xl bg-[#34a6cc] text-white text-xs font-bold shadow-sm hover:opacity-95 cursor-pointer"
+              >
+                📷 Camera
+              </button>
+              <label class="px-3 py-2 rounded-xl bg-gray-100 dark:bg-zinc-700 text-gray-700 dark:text-gray-200 text-xs font-bold cursor-pointer hover:bg-gray-200">
+                Upload
+                <input type="file" accept="image/*" onchange="handlePhotoUpload(event)" class="hidden" />
+              </label>
+            </div>
+          </div>
+
+          <div id="maint-photo-preview" class="hidden mt-3 rounded-xl overflow-hidden border border-[#8abd3f]/40 bg-[#8abd3f]/10 p-2.5">
+            <img id="maint-uploaded-img" alt="Uploaded tree verification" class="hidden w-full h-32 object-cover rounded-lg mb-2" />
+            <div id="maint-simulated-snap" class="flex items-center justify-between text-xs text-emerald-800 dark:text-emerald-300 font-semibold">
+              <span>✅ Geo-Tagged Tree Care Photo • 6.9061°N, 79.9196°E</span>
+              <span class="font-bold">+15 pts</span>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <!-- ============ 2. AUTH ============ -->
-      <section class="screen" id="auth">
-        <svg class="circuit" viewBox="0 0 390 844" preserveAspectRatio="none">
-          <path d="M0 120 H120 L160 160 H390"/><path d="M30 0 V80 L70 120 V260 L110 300 H260"/>
-          <path d="M390 220 H300 L260 260 V420"/><path d="M0 380 H90 L130 420 V520"/>
-          <path d="M360 0 V140 L320 180"/><path d="M200 300 V360 L240 400 H390"/>
-          <circle cx="160" cy="160" r="4"/><circle cx="110" cy="300" r="4"/><circle cx="260" cy="420" r="4"/>
-          <circle cx="130" cy="520" r="4"/><circle cx="240" cy="400" r="4"/>
-        </svg>
-        <div class="auth-body">
-          <div class="label neon-text">CleanWarriors</div>
-          <h1>Join the<br><span class="neon-text">Civic Revolution</span></h1>
-          <p class="muted" style="font-size:14px;margin-bottom:8px">Capture portals, clean real places, and level up your faction across Sri Lanka.</p>
-          <input class="field" id="gamerTag" placeholder="Choose your Gamer Tag" maxlength="20" autocomplete="off">
-          <button class="social-btn" data-auth="google"><span class="ico"><svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg></span>Continue with Google</button>
-          <button class="social-btn" data-auth="apple"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M16.37 12.6c-.02-2.3 1.88-3.4 1.96-3.46-1.07-1.56-2.73-1.78-3.32-1.8-1.41-.14-2.76.83-3.48.83-.72 0-1.82-.81-3-.79-1.54.02-2.96.9-3.76 2.28-1.6 2.78-.41 6.9 1.15 9.16.76 1.1 1.67 2.34 2.86 2.3 1.15-.05 1.58-.74 2.97-.74 1.38 0 1.78.74 2.99.72 1.24-.02 2.02-1.12 2.77-2.23.87-1.28 1.23-2.52 1.25-2.58-.03-.01-2.4-.92-2.39-3.69zM14.1 5.85c.63-.77 1.06-1.83.94-2.89-.91.04-2.02.61-2.67 1.37-.59.68-1.1 1.76-.96 2.8 1.01.08 2.05-.52 2.69-1.28z"/></svg></span>Continue with Apple ID</button>
-          <button class="social-btn" data-auth="phone"><span class="ico">📱</span>Continue with Mobile (OTP)</button>
-          <div class="divider">already a warrior?</div>
-          <button class="btn ghost" data-go="hub">Sign in → go to Map Hub</button>
+      <!-- =========================================================
+           SCREEN 5: PUBLIC MAP VIEW & COMMUNITY REVIEWS
+           ========================================================= -->
+      <section id="screen-reviews" class="hidden p-4 pb-24 space-y-4">
+        <div class="flex items-center justify-between gap-2">
+          <div>
+            <h2 class="text-base font-extrabold text-gray-900 dark:text-white">Public Trees & Reviews</h2>
+            <p class="text-xs text-gray-500 dark:text-gray-400">මහජන සිතියම සහ සමාලෝචන</p>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button id="pub-filter-all" onclick="setPublicFilter('all')">All</button>
+            <button id="pub-filter-healthy" onclick="setPublicFilter('healthy')">Healthy</button>
+            <button id="pub-filter-idle" onclick="setPublicFilter('idle')">⚠️ Idle</button>
+          </div>
+        </div>
+
+        <!-- Horizontal Tree Selector -->
+        <div id="public-tree-selector" class="flex gap-2.5 overflow-x-auto no-scrollbar pb-1"></div>
+
+        <!-- Selected Tree Guardian Card & Idle Takeover Alert -->
+        <div id="public-tree-detail"></div>
+
+        <!-- Add Public Review Form -->
+        <form onsubmit="submitPublicReview(event)" class="p-4 rounded-2xl bg-white dark:bg-zinc-800 border border-gray-100 dark:border-zinc-700 shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-extrabold text-gray-800 dark:text-white">Leave a Community Review</span>
+            <div id="review-star-picker" class="flex items-center gap-0.5"></div>
+          </div>
+          <textarea
+            id="review-comment-input"
+            rows="2"
+            placeholder="Share how this tree is growing (e.g. Healthy green leaves, fence intact!)..."
+            class="w-full text-xs bg-[#F9F9F9] dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 rounded-xl p-2.5 focus:outline-none focus:border-[#34a6cc]"
+          ></textarea>
+          <div class="flex items-center justify-between gap-2">
+            <button type="button" id="review-photo-toggle" onclick="toggleReviewPhotoTag()">
+              📷 Attach Photo
+            </button>
+            <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-[#34a6cc] to-[#8abd3f] shadow-sm hover:opacity-95 cursor-pointer">
+              Post Review
+            </button>
+          </div>
+        </form>
+
+        <!-- Community Reviews Feed -->
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Recent Citizen Verifications</h4>
+          <div id="public-reviews-list" class="space-y-2.5"></div>
         </div>
       </section>
 
-      <!-- ============ 3. FACTION ============ -->
-      <section class="screen" id="faction">
-        <div class="intro">
-          <div class="label">Step 2 of 2</div>
-          <h1>Choose Your Faction —<br><span class="neon-text">Shape Sri Lanka's Future</span></h1>
-          <p>Swipe to compare. You can still join other factions' missions later (reduced points).</p>
+      <!-- =========================================================
+           SCREEN 6: TIME-LAPSE & SOCIAL SHARE (MEMORIES)
+           ========================================================= -->
+      <section id="screen-timelapse" class="hidden p-4 pb-24 space-y-4">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-[#8abd3f]">1-Year Guardian Milestone</span>
+          <h2 class="text-lg font-extrabold text-gray-900 dark:text-white">Growth Time-Lapse & Share</h2>
+          <p class="text-xs text-gray-500 dark:text-gray-400">පැළයේ සිට විශාල ගසක් දක්වා වර්ධනය වූ 10s මතකාවර්ජනය</p>
         </div>
-        <div class="faction-track" id="factionTrack"></div>
-        <div class="dots" id="factionDots"><i></i><i></i><i></i></div>
-        <div class="bottom-cta"><button class="btn" id="confirmFaction" disabled>SELECT A FACTION</button></div>
-      </section>
 
-      <!-- ============ 4. MAP HUB ============ -->
-      <section class="screen" id="hub">
-        <div class="map" id="map"></div>
-        <div class="scanlines"></div>
-        <div class="vignette"></div>
+        <!-- 10s Automated Time-Lapse Video Card -->
+        <div class="rounded-3xl bg-gradient-to-b from-[#34a6cc]/20 via-emerald-50 to-[#dcefc7] dark:from-sky-950/50 dark:via-zinc-900 dark:to-emerald-950/40 border border-[#8abd3f]/40 p-4 shadow-md relative overflow-hidden">
+          <div class="flex items-center justify-between mb-2">
+            <span class="px-2.5 py-1 rounded-full bg-black/60 text-white text-xs font-bold backdrop-blur-xs">
+              🎬 10s Auto Time-Lapse
+            </span>
+            <span class="text-xs font-bold text-[#34a6cc] bg-white/90 dark:bg-zinc-800 px-2.5 py-1 rounded-full">
+              #CleanSriLanka
+            </span>
+          </div>
 
-        <div class="hud-top">
-          <button class="hud-faction" data-go="profile" title="Open profile">
-            <div class="emblem" data-bind="icon">🌿</div>
-            <div style="text-align:left"><b data-bind="fname">FLORA</b><small data-bind="lvl">LV 4 · Guardian</small></div>
+          <div class="h-52 flex items-end justify-center relative">
+            <svg class="w-56 h-48" viewBox="0 0 240 190" fill="none">
+              <circle cx="195" cy="34" r="16" fill="#fbbf24" opacity="0.85"/>
+              <ellipse cx="120" cy="176" rx="80" ry="12" fill="#6d4c41"/>
+              <g id="timelapse-tree-group" class="transition-transform duration-200">
+                <path d="M114 176 L117 105 L123 105 L126 176 Z" fill="#5d4037"/>
+                <circle cx="92" cy="100" r="28" fill="#7cb332"/>
+                <circle cx="148" cy="100" r="28" fill="#7cb332"/>
+                <circle cx="120" cy="68" r="36" fill="#8abd3f"/>
+                <circle cx="106" cy="88" r="24" fill="#a3e635" opacity="0.55"/>
+              </g>
+            </svg>
+          </div>
+
+          <p id="timelapse-month-label" class="text-center text-xs font-extrabold text-gray-800 dark:text-white mt-1">
+            Month 12 • 1-Year Milestone Reached! 🎉🌳
+          </p>
+
+          <!-- Progress Bar -->
+          <div class="mt-2.5 h-2 rounded-full bg-white/70 dark:bg-zinc-700 overflow-hidden">
+            <div id="timelapse-bar" class="h-full bg-gradient-to-r from-[#34a6cc] to-[#8abd3f] transition-all duration-200" style="width: 100%"></div>
+          </div>
+
+          <button
+            id="timelapse-play-btn"
+            onclick="startTimelapse()"
+            class="mt-3 w-full py-2.5 rounded-xl bg-white/90 dark:bg-zinc-800 text-xs font-extrabold text-gray-800 dark:text-white shadow-sm hover:bg-white cursor-pointer"
+          >
+            ↻ Replay 10s Time-Lapse
           </button>
-          <div class="energy">
-            <div class="row"><span>ECO-ENERGY</span><span><span data-bind="energy">72</span>/100 · 🔥<span data-bind="streak">6</span></span></div>
-            <div class="bar"><i data-bind="energyBar" style="width:72%"></i></div>
-          </div>
-          <div class="points"><b data-bind="points">48,250</b><small>ECO-POINTS</small></div>
         </div>
 
-        <div class="side-panel">
-          <button data-sheet="chat">💬<span class="badge">3</span><span class="tip">Squad chat</span></button>
-          <button data-sheet="leaderboard">🏆<span class="tip">Leaderboard</span></button>
-          <button data-go="battle">⚔️<span class="tip">Zone Battle</span></button>
-        </div>
-        <div class="hud-left">
-          <button class="icon-btn" id="recenter" title="Recenter">◎</button>
-        </div>
-
-        <nav class="dock">
-          <button data-go="report"><div class="orb">📋</div>REPORT</button>
-          <button class="center" data-go="organize"><div class="orb">🎯</div>ORGANIZE</button>
-          <button data-go="participate"><div class="orb">🏃</div>PARTICIPATE</button>
-        </nav>
-      </section>
-
-      <!-- ============ 5.1 REPORT ============ -->
-      <section class="screen" id="report">
-        <div class="camera" id="camera"></div>
-        <div class="flash" id="flash"></div>
-        <div class="cam-top">
-          <button class="icon-btn" data-go="hub">✕</button>
-          <div class="gps-chip">📍 <span><b id="reportPlace">Galle Face Beach</b><br><span class="muted">6.9271°N 79.8452°E · ±4 m</span></span></div>
-        </div>
-        <div class="viewfinder" id="viewfinder"><i></i><i></i><i></i><i></i><div class="scan"></div></div>
-
-        <div class="cam-bottom" id="camControls">
-          <div class="label" style="text-align:center">What kind of issue?</div>
-          <div class="cat-row" id="reportCats">
-            <button class="chip on" data-cat="Environmental">🌿 Environment</button>
-            <button class="chip" data-cat="Social">🤝 Social</button>
-            <button class="chip" data-cat="Ethical">⚖️ Ethical</button>
-          </div>
-          <button class="shutter" id="shutter" aria-label="Capture"><i></i></button>
-        </div>
-
-        <div class="cam-bottom report-form" id="reportForm">
-          <div class="row" style="margin-bottom:12px">
-            <span class="pill" id="reportCatPill">🌿 Environmental</span>
-            <span class="pill">📸 1 photo</span>
-            <span class="spacer"></span>
-            <button class="muted" id="retake" style="font-size:13px">Retake</button>
-          </div>
-          <textarea class="field" id="reportNote" placeholder="Short note, e.g. “Plastic waste piling up near the north end of the beach”"></textarea>
-          <div style="height:12px"></div>
-          <button class="btn" id="submitReport">SUBMIT REPORT</button>
-          <p class="muted" style="font-size:11px;text-align:center;margin-top:10px">+500 now · +1,000 bonus when a Level 3+ Inspector verifies it</p>
-        </div>
-      </section>
-
-      <!-- ============ 5.2 ORGANIZE ============ -->
-      <section class="screen" id="organize">
-        <div class="topbar">
-          <button class="icon-btn" data-go="hub">←</button>
-          <h2>Organize Mission</h2>
-          <span class="pill">🎯</span>
-        </div>
-        <div class="scroll">
-          <div class="section">
-            <div class="label">Portal</div>
-            <div class="card row" id="orgPortal"></div>
-          </div>
-          <div class="section">
-            <div class="label">Mission type</div>
-            <div class="chips" id="orgType">
-              <button class="chip on" data-v="Cleaning">🧹 Cleaning</button>
-              <button class="chip" data-v="Charity">🎁 Charity</button>
-              <button class="chip" data-v="Awareness">📢 Awareness</button>
-            </div>
-          </div>
-          <div class="section">
-            <div class="card">
-              <div class="cal-head"><button class="icon-btn" id="calPrev" style="width:32px;height:32px">‹</button><b id="calTitle"></b><button class="icon-btn" id="calNext" style="width:32px;height:32px">›</button></div>
-              <div class="calendar" id="calendar"></div>
-            </div>
-          </div>
-          <div class="section">
-            <div class="label">Start time</div>
-            <div class="chips" id="orgTime">
-              <button class="chip" data-v="6:30 AM">6:30 AM</button>
-              <button class="chip on" data-v="7:00 AM">7:00 AM</button>
-              <button class="chip" data-v="9:00 AM">9:00 AM</button>
-              <button class="chip" data-v="4:00 PM">4:00 PM</button>
-            </div>
-          </div>
-          <div class="section">
-            <div class="label">Expected crowd · duration</div>
-            <div class="chips" id="orgCrowd" style="margin-bottom:8px">
-              <button class="chip on" data-v="0">1–10</button>
-              <button class="chip" data-v="1">10–20</button>
-              <button class="chip" data-v="2">20–50</button>
-              <button class="chip" data-v="3">50–100+</button>
-            </div>
-            <div class="chips" id="orgHours">
-              <button class="chip on" data-v="0">1 hour</button>
-              <button class="chip" data-v="1">3+ hours</button>
-            </div>
-          </div>
-          <div class="section">
-            <div class="reward-box"><span class="muted" style="font-size:13px">Estimated host reward</span><b class="neon-text" id="orgReward">500</b></div>
-          </div>
-          <div class="section">
-            <div class="note">ℹ️ <span id="orgNote"></span></div>
-          </div>
-          <div class="section" style="padding-bottom:30px"><button class="btn" id="createMission">CREATE MISSION</button></div>
-        </div>
-      </section>
-
-      <!-- ============ 5.3 PARTICIPATE ============ -->
-      <section class="screen" id="participate">
-        <div class="topbar">
-          <button class="icon-btn" data-go="hub">←</button>
-          <h2>Active Missions</h2>
-          <span class="pill" id="missionCount">4 nearby</span>
-        </div>
-        <div class="scroll"><div class="section stack" id="missionList"></div></div>
-
-        <div class="qr-scan" id="qrScan">
-          <div id="qrStep1">
-            <div class="label">Check-in</div>
-            <h2 style="font-size:18px">Scan the host's QR code</h2>
-            <div class="qr-frame"><i></i><i></i><i></i><i></i><svg id="qrArt" viewBox="0 0 21 21"></svg><div class="scan"></div></div>
-            <p class="muted" style="font-size:13px">📍 GPS check-in: you're <b class="neon-text">38 m</b> from the mission point</p>
-            <div style="height:24px"></div>
-            <button class="btn ghost" id="qrCancel">Cancel</button>
-          </div>
-          <div id="qrStep2" style="display:none;width:100%">
-            <div class="check-big" style="margin:20px auto">✓</div>
-            <h2 style="font-size:20px">You're in!</h2>
-            <p class="muted" style="margin:8px 0 6px" id="qrMissionName"></p>
-            <p class="muted" style="font-size:12px">QR verified · GPS verified · Upload before &amp; after photos to earn full points</p>
-            <div style="height:28px"></div>
-            <button class="btn" id="finishMission">FINISH MISSION (DEMO)</button>
-            <div style="height:10px"></div>
-            <button class="btn ghost" id="qrDone">Back to missions</button>
+        <!-- Share to Socials -->
+        <div class="p-4 rounded-2xl bg-white dark:bg-zinc-800 border border-gray-100 dark:border-zinc-700 shadow-sm">
+          <h4 class="text-xs font-extrabold text-gray-800 dark:text-white mb-2.5">Share to Socials (බෙදාගන්න)</h4>
+          <div class="grid grid-cols-3 gap-2.5">
+            <button onclick="shareToSocial('Facebook')" class="py-3 rounded-xl bg-[#1877F2]/10 text-[#1877F2] font-bold text-xs hover:bg-[#1877F2]/20 transition-colors cursor-pointer">
+              📘 Facebook
+            </button>
+            <button onclick="shareToSocial('Instagram')" class="py-3 rounded-xl bg-pink-500/10 text-pink-600 font-bold text-xs hover:bg-pink-500/20 transition-colors cursor-pointer">
+              📸 Instagram
+            </button>
+            <button onclick="shareToSocial('TikTok')" class="py-3 rounded-xl bg-gray-900 dark:bg-zinc-700 text-white font-bold text-xs hover:opacity-90 transition-opacity cursor-pointer">
+              🎵 TikTok
+            </button>
           </div>
         </div>
       </section>
 
-      <!-- ============ 6. PROFILE ============ -->
-      <section class="screen" id="profile">
-        <div class="topbar">
-          <button class="icon-btn" data-go="hub">←</button>
-          <h2>Profile</h2>
-          <button class="icon-btn" id="inviteBtn" title="Invite a friend">🔗</button>
-        </div>
-        <div class="scroll">
-          <div class="profile-hero">
-            <div class="avatar-wrap" style="height:250px;color:var(--accent)" id="profileAvatar"></div>
-            <h2 data-bind="tag">EcoNinja_LK</h2>
-            <div class="lvl-badge"><span data-bind="icon">🌿</span><span data-bind="lvlFull">LV 4 · GUARDIAN</span></div>
-            <div class="xp">
-              <div class="row"><span data-bind="points">48,250</span><span>Next: LV 5 Organizer · 60,000</span></div>
-              <div class="energy"><div class="bar"><i style="width:80%"></i></div></div>
-            </div>
-          </div>
-          <div class="tabs" id="profileTabs">
-            <button class="on" data-tab="kits">Kits &amp; Costumes</button>
-            <button data-tab="badges">Badges</button>
-            <button data-tab="wallet">Eco-Wallet</button>
-          </div>
-          <div class="section" id="profileTab"></div>
-        </div>
-      </section>
+    </main>
 
-      <!-- ============ 7. AR ============ -->
-      <section class="screen" id="ar">
-        <div class="ar-scene">
-          <div class="ar-floor"></div>
-          <div class="ar-tint"></div>
-          <div class="reticle"></div>
-          <div class="flag3d"><div class="pole"></div><div class="cloth" id="arFlag">🌿</div><div class="base"></div></div>
-        </div>
-        <div class="cam-top"><button class="icon-btn" data-go="hub">✕</button><div class="gps-chip">📡 <span><b>AR · Live</b> <span class="muted">· tracking surface</span></span></div></div>
-        <div class="ar-hud">
-          <div class="card" style="background:rgba(18,18,18,.88);backdrop-filter:blur(8px)">
-            <div class="row"><span class="pill" id="arType">🌍 Environmental Portal</span><span class="spacer"></span><span class="pill" id="arLevel">P-LV 5</span></div>
-            <h3 style="font-size:17px;margin:10px 0 4px" id="arName">Galle Face Beach</h3>
-            <p class="muted" style="font-size:13px" id="arOwner">Controlled by Faction Flora · inside an active Clean Zone</p>
-            <div class="action-row">
-              <button class="btn ghost" id="arPhoto">📸 Snapshot</button>
-              <button class="btn" data-go="hub">DONE</button>
-            </div>
-          </div>
-        </div>
-      </section>
+    <!-- Bottom Mobile App Tab Bar -->
+    <nav id="bottom-nav" class="hidden sticky bottom-0 z-30 bg-[#FFFFFF] dark:bg-zinc-900 border-t border-gray-100 dark:border-zinc-800 px-2 py-2 grid grid-cols-4 gap-1 shadow-[0_-4px_14px_rgba(0,0,0,0.03)]">
+      <button onclick="navigateTo('map')" data-nav-target="map" class="bottom-tab flex flex-col items-center py-1 text-xs">
+        <span class="text-lg leading-none mb-1">🗺️</span>
+        <span>My Map</span>
+      </button>
+      <button onclick="navigateTo('maintain')" data-nav-target="maintain" class="bottom-tab flex flex-col items-center py-1 text-xs">
+        <span class="text-lg leading-none mb-1">🌿</span>
+        <span>Care</span>
+      </button>
+      <button onclick="navigateTo('reviews')" data-nav-target="reviews" class="bottom-tab flex flex-col items-center py-1 text-xs">
+        <span class="text-lg leading-none mb-1">💬</span>
+        <span>Public</span>
+      </button>
+      <button onclick="navigateTo('timelapse')" data-nav-target="timelapse" class="bottom-tab flex flex-col items-center py-1 text-xs">
+        <span class="text-lg leading-none mb-1">🎬</span>
+        <span>Memories</span>
+      </button>
+    </nav>
 
-      <!-- ============ 8. MISSION SUMMARY ============ -->
-      <section class="screen" id="summary">
-        <div class="topbar">
-          <button class="icon-btn" data-go="hub">✕</button>
-          <h2>Mission Complete</h2>
-          <span class="pill neon-text" id="sumPill">+5,000</span>
-        </div>
-        <div class="scroll">
-          <div class="section">
-            <p class="muted" style="font-size:13px;margin-bottom:10px" id="sumTitle"></p>
-            <div class="collage" id="collage"></div>
-          </div>
-          <div class="section">
-            <div class="stat-grid">
-              <div class="stat"><b>24</b><small>Warriors</small></div>
-              <div class="stat"><b>3h</b><small>Duration</small></div>
-              <div class="stat"><b>86 kg</b><small>Waste</small></div>
-            </div>
-            <div class="card">
-              <div class="row"><span class="muted" style="font-size:13px">Mission points</span><span class="spacer"></span><b class="head" id="sumPts">+5,000</b></div>
-              <div class="row" style="margin-top:8px"><span class="muted" style="font-size:13px">Portal level-up</span><span class="spacer"></span><b class="head">P-LV 4 → 5</b></div>
-              <div class="row" style="margin-top:8px"><span class="muted" style="font-size:13px">Share bonus</span><span class="spacer"></span><b class="head neon-text">+10,000</b></div>
-            </div>
-          </div>
-          <div class="section">
-            <div class="label">Share highlights</div>
-            <div class="share-row">
-              <button data-share="TikTok"><span>🎵</span>TikTok</button>
-              <button data-share="Instagram Reels"><span>📸</span>Reels</button>
-              <button data-share="Facebook"><span>📘</span>Facebook</button>
-            </div>
-            <p class="muted" style="font-size:12px;margin-top:10px;text-align:center">Auto-tags <span class="neon-text">#CleanSriLanka #CleanWarriorsLK</span></p>
-          </div>
-          <div class="section" style="padding-bottom:30px"><button class="btn" id="shareAll">SHARE HIGHLIGHTS</button></div>
-        </div>
-      </section>
-
-      <!-- ============ 8. ZONE BATTLE ============ -->
-      <section class="screen" id="battle">
-        <div class="topbar">
-          <button class="icon-btn" data-go="hub">←</button>
-          <h2>Zone Battle</h2>
-          <span class="pill">OCT 2026</span>
-        </div>
-        <div class="scroll">
-          <div class="section">
-            <div class="card" style="text-align:center">
-              <div class="label">Monthly battle ends in</div>
-              <div class="countdown" id="countdown"></div>
-            </div>
-          </div>
-          <div class="section">
-            <div class="label">Faction control · Colombo District</div>
-            <div class="battle-bar" id="battleBar"></div>
-            <div class="row muted" style="font-size:11px;justify-content:space-between" id="battleLegend"></div>
-          </div>
-          <div class="section">
-            <div class="stat-grid">
-              <div class="stat"><b>128</b><small>Clean Zones</small></div>
-              <div class="stat"><b>2,410</b><small>Portals</small></div>
-              <div class="stat"><b>9.3k</b><small>Warriors</small></div>
-            </div>
-          </div>
-          <div class="section">
-            <div class="label">Winning team rewards · sponsors</div>
-            <div class="sponsor"><div class="logo-s">K</div><div><b>Keells</b><br><small class="muted">20% grocery voucher for the winning faction</small></div></div>
-            <div class="sponsor"><div class="logo-s">T</div><div><b>Thilakawardhana</b><br><small class="muted">Rs. 1,500 apparel voucher · top 100 players</small></div></div>
-            <div class="sponsor"><div class="logo-s">GB</div><div><b>Green Business partner</b><br><small class="muted">Eco-product freebies for the top squad</small></div></div>
-          </div>
-          <div class="section" style="padding-bottom:30px"><button class="btn" data-go="hub">DEFEND YOUR ZONES</button></div>
-        </div>
-      </section>
-
-      <!-- Sheets, toast -->
-      <div class="sheet-back" id="sheetBack"></div>
-      <div class="sheet" id="sheet"><div class="grab"></div><div class="sheet-body" id="sheetBody"></div></div>
-      <div class="toast" id="toast"><span class="t-ico" id="toastIco">✅</span><div><b id="toastTitle"></b><small id="toastMsg"></small></div></div>
-    </div>
   </div>
-</div>
-<script src="app.js"></script>
+
+  <script src="app.js"></script>
 </body>
 </html>
